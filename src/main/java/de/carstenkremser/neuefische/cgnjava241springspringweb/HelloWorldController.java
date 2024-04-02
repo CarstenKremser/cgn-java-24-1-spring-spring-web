@@ -19,6 +19,11 @@ class HelloWorldController {
         return "Hello, "+name+"!";
     }
 
+    @GetMapping(path="/messages")
+    public String messages() {
+        return "I got these messages:\n" + messages.toString();
+    }
+
     @PostMapping(path = "/messages/{id}/{name}")
     public String messages(@PathVariable String id,
                            @PathVariable String name,
