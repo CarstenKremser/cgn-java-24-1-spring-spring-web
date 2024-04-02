@@ -1,5 +1,7 @@
 package de.carstenkremser.neuefische.cgnjava241springspringweb;
 
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -36,15 +38,19 @@ class HelloWorldController {
     }
 
     @DeleteMapping(path="/messages/{id}")
-    public String messagesDelete(@PathVariable String id) {
+    public ResponseEntity<?> messagesDelete(@PathVariable String id) {
         Optional<Message> optionalMessage = messages
                 .stream()
                 .filter(msg -> msg.getId().equals(id))
                 .findFirst();
         if (optionalMessage.isPresent()) {
             messages.remove(optionalMessage.get());
-            return "Deleted message: \n" + optionalMessage.get();
+            return ResponseEntity
+                    .accepted()
+                    .body("Deleted message: \n" + optionalMessage.get());
         }
-        return "Message with id "+ id + " not found";
+        return ResponseEntity
+                .status(HttpStatusCode.valueOf(404))
+                .body("Message with id "+ id + " not found");
     }
 }
