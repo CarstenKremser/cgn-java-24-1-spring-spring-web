@@ -23,22 +23,24 @@ class HelloWorldController {
     }
 
     @GetMapping(path="/messages")
-    public String messagesGet() {
-        return "I got these messages:\n" + messages.toString();
+    public List<Message> messagesGet() {
+        //return "I got these messages:\n" + messages.toString();
+        return messages;
     }
 
     @PostMapping(path = "/messages/{id}/{name}")
-    public String messagesPost(@PathVariable String id,
+    public Message messagesPost(@PathVariable String id,
                            @PathVariable String name,
                            @RequestBody String body) {
         Message message = new Message(id, name, body);
         messages.add(message);
         System.out.println(messages);
-        return "Message added: \n" + message;
+        //return "Message added: \n" + message;
+        return message;
     }
 
     @DeleteMapping(path="/messages/{id}")
-    public ResponseEntity<?> messagesDelete(@PathVariable String id) {
+    public ResponseEntity<Message> messagesDelete(@PathVariable String id) {
         Optional<Message> optionalMessage = messages
                 .stream()
                 .filter(msg -> msg.getId().equals(id))
@@ -47,10 +49,14 @@ class HelloWorldController {
             messages.remove(optionalMessage.get());
             return ResponseEntity
                     .accepted()
-                    .body("Deleted message: \n" + optionalMessage.get());
+                    .body(optionalMessage.get());
+                    //.body("Deleted message: \n" + optionalMessage.get());
         }
         return ResponseEntity
                 .status(HttpStatusCode.valueOf(404))
-                .body("Message with id "+ id + " not found");
+                .body(null);
+
+
+
     }
 }
